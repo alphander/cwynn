@@ -9,7 +9,7 @@ struct scored_item
     WynnItem* pItem;
 };
 
-LIST_GENERIC_EX(struct scored_item, ItemScoreList, itemscore_list);
+HEAP_GENERIC_EX(struct scored_item, ItemScoreHeap, itemscore_heap);
 
 void scored_items_print(WynnItem* pSearchItem, WynnItemList* pItemList);
 

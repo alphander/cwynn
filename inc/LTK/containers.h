@@ -756,12 +756,12 @@ static inline void TF##_push(TS* pHeap, T data) {\
     heap_push(&pHeap->heap, &data);\
 }\
 static inline T TF##_pop(TS* pHeap) {\
-    T tmp;\
+    T tmp = {0};\
     heap_pop(&pHeap->heap, &tmp);\
     return tmp;\
 }\
 static inline T TF##_peek(TS* pHeap) {\
-    T tmp;\
+    T tmp = {0};\
     heap_peek(&pHeap->heap, &tmp);\
     return tmp;\
 }\

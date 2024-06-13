@@ -8,19 +8,17 @@ static int wynnitem_score_cmp(const struct scored_item* pItemA, const struct sco
 
 void scored_items_print(WynnItem* pSearchItem, WynnItemList* pItemList)
 {
-    ItemScoreList itemScores = itemscore_list_create();
+    ItemScoreHeap itemScores = itemscore_heap_create(wynnitem_score_cmp);
     WynnItem* pItem = NULL;
     while (wynnitem_list_iter_next(pItemList, &pItem))
     {
         float score = wynnitem_similarity(pSearchItem, pItem);
-        itemscore_list_append(&itemScores, (struct scored_item){score, pItem});
+        itemscore_heap_push(&itemScores, (struct scored_item){score, pItem});
     }
 
-    itemscore_list_sort(&itemScores, wynnitem_score_cmp);
-
-    struct scored_item scoredItem = {0};
-    for (int i = 0; itemscore_list_iter_next(&itemScores, &scoredItem) && i < 20;)
+    for (int i = 0; itemscore_heap_size(&itemScores) > 0 && i < 20;)
     {
+        struct scored_item scoredItem = itemscore_heap_pop(&itemScores);
         if (scoredItem.pItem->type != pSearchItem->type) continue;
         if (!strcmp(scoredItem.pItem->pName->str, pSearchItem->pName->str)) continue;
 
@@ -28,5 +26,5 @@ void scored_items_print(WynnItem* pSearchItem, WynnItemList* pItemList)
         i++;
     }
     printf("\n");
-    itemscore_list_destroy(&itemScores);
+    itemscore_heap_destroy(&itemScores);
 }
