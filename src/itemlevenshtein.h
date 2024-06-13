@@ -11,9 +11,9 @@ struct levenshtein_item
     WynnItem* pItem;
 };
 
-LIST_GENERIC_EX(struct levenshtein_item, LevenshteinList, levenshtein_list);
+HEAP_GENERIC_EX(struct levenshtein_item, LevenshteinHeap, levenshtein_heap);
 
 uint32_t levenshtein(char* str, char* testStr);
-LevenshteinList levenshtein_sorted(char* itemName, WynnItemList* pItemList);
+LevenshteinHeap levenshtein_sorted(char* itemName, WynnItemList* pItemList);
 
 #endif // ITEMLEVENSHTEIN_H

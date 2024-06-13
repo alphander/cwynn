@@ -46,18 +46,16 @@ static int levenshtein_cmp(
     return pItemA->distance < pItemB->distance ? -1 : 1;
 }
 
-LevenshteinList levenshtein_sorted(char* itemName, WynnItemList* pItemList)
+LevenshteinHeap levenshtein_sorted(char* itemName, WynnItemList* pItemList)
 {
-    LevenshteinList list = levenshtein_list_create();
+    LevenshteinHeap heap = levenshtein_heap_create(levenshtein_cmp);
 
     WynnItem* pItem = NULL;
     while (wynnitem_list_iter_next(pItemList, &pItem))
     {
         float score = levenshtein(itemName, pItem->pName->str);
-        levenshtein_list_append(&list, (struct levenshtein_item){score, pItem});
+        levenshtein_heap_push(&heap, (struct levenshtein_item){score, pItem});
     }
 
-    levenshtein_list_sort(&list, levenshtein_cmp);
-
-    return list;
+    return heap;
 }

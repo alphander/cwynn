@@ -17,24 +17,26 @@ static WynnItem* select_search_item(WynnItemList* pItemList)
     fgets(searchName.str, sizeof(searchName.str), stdin);
     *strchr(searchName.str, '\n') = '\0';
 
-    LevenshteinList levenshteinList = levenshtein_sorted(searchName.str, pItemList);
-    struct levenshtein_item levenshteinItem = levenshtein_list_get(&levenshteinList, 0);
+    LevenshteinHeap levenshteinHeap = levenshtein_sorted(searchName.str, pItemList);
+    struct levenshtein_item levenshteinItem = levenshtein_heap_peek(&levenshteinHeap);
     WynnItem* pBestMatchItem = levenshteinItem.pItem;
     uint32_t lowestDist = levenshteinItem.distance;
 
     if (lowestDist == 0)
     {
-        levenshtein_list_destroy(&levenshteinList);
+        levenshtein_heap_destroy(&levenshteinHeap);
         return pBestMatchItem;
     }
 
     for (;;)
     {
+        WynnItem* pItems[8];
         for (size_t i = 0; i < 8; i++)
         {
-            char* itemName = levenshtein_list_get(&levenshteinList, i).pItem->pName->str;
-            printf("%zu %s\n", i + 1, itemName);
+            pItems[i] = levenshtein_heap_pop(&levenshteinHeap).pItem;
+            printf("%zu %s\n", i + 1, pItems[i]->pName->str);
         }
+
         printf ("Did you mean? ([1-9]/n): ");
         char answer[4]; 
         fgets(answer, sizeof(answer), stdin);
@@ -46,9 +48,9 @@ static WynnItem* select_search_item(WynnItemList* pItemList)
             continue;
         }
         else if (strnlen(answer, sizeof(answer)) < 2)
-            pReturnItem = levenshtein_list_get(&levenshteinList, 0).pItem;
+            pReturnItem = pItems[0];
         else if (answer[0] >= '1' && answer[0] <= '8')
-            pReturnItem = levenshtein_list_get(&levenshteinList, answer[0] - '1').pItem;
+            pReturnItem = pItems[answer[0] - '1'];
         else if (tolower(answer[0]) == 'n')
             pReturnItem = NULL;
         else
@@ -57,7 +59,7 @@ static WynnItem* select_search_item(WynnItemList* pItemList)
             continue;
         }
         
-        levenshtein_list_destroy(&levenshteinList);
+        levenshtein_heap_destroy(&levenshteinHeap);
 
         return pReturnItem;
     }
