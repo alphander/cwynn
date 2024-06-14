@@ -8,7 +8,7 @@
 #include "itemlevenshtein.h"
 
 #define DB_URL "https://api.wynncraft.com/v3/item/database?fullResult"
-#define DB_PATH "data/wynndata.json"
+#define DB_BIN_PATH "data/wynnitems.bin"
 
 static WynnItem* select_search_item(WynnItemList* pItemList)
 {
@@ -67,23 +67,17 @@ static WynnItem* select_search_item(WynnItemList* pItemList)
 
 int main(int argc, char* argv[])
 {
-    WynnItemPool itemPool = wynnitem_pool_create();
-    NamePool namePool = name_pool_create();
-    WynnItemList itemList = wynnitems_load(&itemPool, &namePool, DB_PATH, DB_URL);
+    WynnItemList* pItemList = wynnitems_load(DB_BIN_PATH, DB_URL);
 
     for (;;)
     {
-        WynnItem* pSearchItem = select_search_item(&itemList);
+        WynnItem* pSearchItem = select_search_item(pItemList);
         if (pSearchItem == NULL) continue;
 
         printf("Selected: '%s'\n", pSearchItem->pName->str);
-
-        scored_items_print(pSearchItem, &itemList);
+        scored_items_print(pSearchItem, pItemList);
     }
 
-    wynnitem_list_destroy(&itemList);
-    wynnitem_pool_destroy(&itemPool);
-    name_pool_destroy(&namePool);
-
+    wynnitems_unload();
     return 0;
 }

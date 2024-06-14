@@ -6,34 +6,34 @@
 
 typedef enum
 {
-    WYNNITEM_TYPE_HELMET,
-    WYNNITEM_TYPE_CHESTPLATE,
-    WYNNITEM_TYPE_LEGGINGS,
-    WYNNITEM_TYPE_BOOTS,
-    WYNNITEM_TYPE_RING,
-    WYNNITEM_TYPE_BRACELET,
-    WYNNITEM_TYPE_NECKLACE,
-    WYNNITEM_TYPE_WEAPON,
+    WYNNITEM_TYPE_HELMET = 0,
+    WYNNITEM_TYPE_CHESTPLATE = 1,
+    WYNNITEM_TYPE_LEGGINGS = 2,
+    WYNNITEM_TYPE_BOOTS = 3,
+    WYNNITEM_TYPE_RING = 4,
+    WYNNITEM_TYPE_BRACELET = 5,
+    WYNNITEM_TYPE_NECKLACE = 6,
+    WYNNITEM_TYPE_WEAPON = 7,
 } WynnItemType;
 
 typedef enum
 {
-    WYNNITEM_CLASS_MAGE,
-    WYNNITEM_CLASS_WARRIOR,
-    WYNNITEM_CLASS_ARCHER,
-    WYNNITEM_CLASS_ASSASSIN,
-    WYNNITEM_CLASS_SHAMAN,
+    WYNNITEM_CLASS_MAGE = 0,
+    WYNNITEM_CLASS_WARRIOR = 1,
+    WYNNITEM_CLASS_ARCHER = 2,
+    WYNNITEM_CLASS_ASSASSIN = 3,
+    WYNNITEM_CLASS_SHAMAN = 4,
 } WynnItemClass;
 
 typedef enum 
 {
-    WYNNITEM_TIER_COMMON,
-    WYNNITEM_TIER_UNIQUE,
-    WYNNITEM_TIER_RARE,
-    WYNNITEM_TIER_LEGENDARY,
-    WYNNITEM_TIER_FABLED,
-    WYNNITEM_TIER_MYTHIC,
-    WYNNITEM_TIER_SET,
+    WYNNITEM_TIER_COMMON = 0,
+    WYNNITEM_TIER_UNIQUE = 1,
+    WYNNITEM_TIER_RARE = 2,
+    WYNNITEM_TIER_LEGENDARY = 3,
+    WYNNITEM_TIER_FABLED = 4,
+    WYNNITEM_TIER_MYTHIC = 5,
+    WYNNITEM_TIER_SET = 6,
 } WynnItemTier;
 
 typedef enum 
@@ -106,9 +106,9 @@ typedef struct {
 
         int32_t elementalDefence;
         int32_t earthDefence;
-        int32_t airDefence;
-        int32_t fireDefence;
         int32_t thunderDefence;
+        int32_t fireDefence;
+        int32_t airDefence;
         int32_t waterDefence;
 
         int32_t rawElementalDamage;
@@ -135,11 +135,11 @@ typedef struct {
 
         int32_t spellDamage;
         int32_t elementalSpellDamage;
-        int32_t fireSpellDamage;
-        int32_t waterSpellDamage;
         int32_t earthSpellDamage;
         int32_t thunderSpellDamage;
+        int32_t fireSpellDamage;
         int32_t airSpellDamage;
+        int32_t waterSpellDamage;
 
         int32_t rawSpellDamage;
         int32_t rawNeutralSpellDamage;
@@ -174,7 +174,7 @@ typedef struct {
         int32_t stealing;
         int32_t xpBonus;
         int32_t lootBonus;
-        int32_t soulPointRegen;
+        int32_t soulPointRegen; // May change in next update
 
         int32_t SpellCost1st;
         int32_t SpellCost2nd;
@@ -192,7 +192,7 @@ typedef struct {
 } WynnItem;
 
 POOL_GENERIC_EX(WynnItem, WynnItemPool, wynnitem_pool)
-POOL_GENERIC_EX(WynnItemName, NamePool, name_pool)
+POOL_GENERIC_EX(WynnItemName, WynnItemNamePool, wynnitem_name_pool)
 LIST_GENERIC_EX(WynnItem*, WynnItemList, wynnitem_list)
 
 typedef struct

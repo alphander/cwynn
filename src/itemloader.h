@@ -3,6 +3,7 @@
 
 #include "wynnitems.h"
 
-WynnItemList wynnitems_load(WynnItemPool* pItemPool, NamePool* pNamePool, char* dbPath, char* dbUrl);
+WynnItemList* wynnitems_load(char* dbBinPath, char* dbUrl);
+void wynnitems_unload();
 
 #endif // ITEMLOADER_H
