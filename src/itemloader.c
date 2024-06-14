@@ -135,50 +135,50 @@ static WynnItemList wynnitems_load_json(
     JsonKey itemName = {0};
     while ((pJsonItem = json_object_next(pRoot, &itemName)))
     {   
-        WynnItem* pItem = wynnitem_pool_alloc(pItemPool);
+        WynnItem item = {0};
         JsonValue* pTypeStr = NULL;
         if ((pTypeStr = json_object_get(pJsonItem, (JsonKey){"type"})) ||
             (pTypeStr = json_object_get(pJsonItem, (JsonKey){"accessoryType"})))
         {
             const char* type = json_to_string(pTypeStr);
-            if (!strcmp(type, "helmet")) pItem->type = WYNNITEM_TYPE_HELMET;
-            else if (!strcmp(type, "chestplate")) pItem->type = WYNNITEM_TYPE_CHESTPLATE;
-            else if (!strcmp(type, "leggings")) pItem->type = WYNNITEM_TYPE_LEGGINGS;
-            else if (!strcmp(type, "boots")) pItem->type = WYNNITEM_TYPE_BOOTS;
-            else if (!strcmp(type, "ring")) pItem->type = WYNNITEM_TYPE_RING;
-            else if (!strcmp(type, "bracelet")) pItem->type = WYNNITEM_TYPE_BRACELET;
-            else if (!strcmp(type, "necklace")) pItem->type = WYNNITEM_TYPE_NECKLACE;
-            else if (!strcmp(type, "spear")) pItem->type = WYNNITEM_TYPE_WEAPON;
-            else if (!strcmp(type, "bow")) pItem->type = WYNNITEM_TYPE_WEAPON;
-            else if (!strcmp(type, "wand")) pItem->type = WYNNITEM_TYPE_WEAPON;
-            else if (!strcmp(type, "dagger")) pItem->type = WYNNITEM_TYPE_WEAPON;
-            else if (!strcmp(type, "relik")) pItem->type = WYNNITEM_TYPE_WEAPON;
+            if (!strcmp(type, "helmet")) item.type = WYNNITEM_TYPE_HELMET;
+            else if (!strcmp(type, "chestplate")) item.type = WYNNITEM_TYPE_CHESTPLATE;
+            else if (!strcmp(type, "leggings")) item.type = WYNNITEM_TYPE_LEGGINGS;
+            else if (!strcmp(type, "boots")) item.type = WYNNITEM_TYPE_BOOTS;
+            else if (!strcmp(type, "ring")) item.type = WYNNITEM_TYPE_RING;
+            else if (!strcmp(type, "bracelet")) item.type = WYNNITEM_TYPE_BRACELET;
+            else if (!strcmp(type, "necklace")) item.type = WYNNITEM_TYPE_NECKLACE;
+            else if (!strcmp(type, "spear")) item.type = WYNNITEM_TYPE_WEAPON;
+            else if (!strcmp(type, "bow")) item.type = WYNNITEM_TYPE_WEAPON;
+            else if (!strcmp(type, "wand")) item.type = WYNNITEM_TYPE_WEAPON;
+            else if (!strcmp(type, "dagger")) item.type = WYNNITEM_TYPE_WEAPON;
+            else if (!strcmp(type, "relik")) item.type = WYNNITEM_TYPE_WEAPON;
             else ERR_RET(true, ERR_FAILURE, (WynnItemList){0});
         } 
         else continue;
 
         JsonValue* pTierStr = json_object_get(pJsonItem, (JsonKey){"tier"});
         const char* tier = json_to_string(pTierStr);
-        if (!strcmp(tier, "common")) pItem->tier = WYNNITEM_TIER_COMMON;
-        else if (!strcmp(tier, "unique")) pItem->tier = WYNNITEM_TIER_UNIQUE;
-        else if (!strcmp(tier, "rare")) pItem->tier = WYNNITEM_TIER_RARE;
-        else if (!strcmp(tier, "legendary")) pItem->tier = WYNNITEM_TIER_LEGENDARY;
-        else if (!strcmp(tier, "fabled")) pItem->tier = WYNNITEM_TIER_FABLED;
-        else if (!strcmp(tier, "mythic")) pItem->tier = WYNNITEM_TIER_MYTHIC;
-        else if (!strcmp(tier, "set")) pItem->tier = WYNNITEM_TIER_SET;
+        if (!strcmp(tier, "common")) item.tier = WYNNITEM_TIER_COMMON;
+        else if (!strcmp(tier, "unique")) item.tier = WYNNITEM_TIER_UNIQUE;
+        else if (!strcmp(tier, "rare")) item.tier = WYNNITEM_TIER_RARE;
+        else if (!strcmp(tier, "legendary")) item.tier = WYNNITEM_TIER_LEGENDARY;
+        else if (!strcmp(tier, "fabled")) item.tier = WYNNITEM_TIER_FABLED;
+        else if (!strcmp(tier, "mythic")) item.tier = WYNNITEM_TIER_MYTHIC;
+        else if (!strcmp(tier, "set")) item.tier = WYNNITEM_TIER_SET;
         else ERR_RET(true, ERR_FAILURE, (WynnItemList){0});
 
         JsonValue* pAttackSpeedStr = json_object_get(pJsonItem, (JsonKey){"attackSpeed"});
         if (pAttackSpeedStr != NULL)
         {
             const char* speed = json_to_string(pAttackSpeedStr);
-            if (!strcmp(speed, "super_slow")) pItem->attackSpeed = WYNNITEM_ATTACK_SPEED_SUPER_SLOW;
-            else if (!strcmp(speed, "very_slow")) pItem->attackSpeed = WYNNITEM_ATTACK_SPEED_VERY_SLOW;
-            else if (!strcmp(speed, "slow")) pItem->attackSpeed = WYNNITEM_ATTACK_SPEED_SLOW;
-            else if (!strcmp(speed, "normal")) pItem->attackSpeed = WYNNITEM_ATTACK_SPEED_NORMAL;
-            else if (!strcmp(speed, "fast")) pItem->attackSpeed = WYNNITEM_ATTACK_SPEED_FAST;
-            else if (!strcmp(speed, "very_fast")) pItem->attackSpeed = WYNNITEM_ATTACK_SPEED_VERY_FAST;
-            else if (!strcmp(speed, "super_fast")) pItem->attackSpeed = WYNNITEM_ATTACK_SPEED_SUPER_FAST;
+            if (!strcmp(speed, "super_slow")) item.attackSpeed = WYNNITEM_ATTACK_SPEED_SUPER_SLOW;
+            else if (!strcmp(speed, "very_slow")) item.attackSpeed = WYNNITEM_ATTACK_SPEED_VERY_SLOW;
+            else if (!strcmp(speed, "slow")) item.attackSpeed = WYNNITEM_ATTACK_SPEED_SLOW;
+            else if (!strcmp(speed, "normal")) item.attackSpeed = WYNNITEM_ATTACK_SPEED_NORMAL;
+            else if (!strcmp(speed, "fast")) item.attackSpeed = WYNNITEM_ATTACK_SPEED_FAST;
+            else if (!strcmp(speed, "very_fast")) item.attackSpeed = WYNNITEM_ATTACK_SPEED_VERY_FAST;
+            else if (!strcmp(speed, "super_fast")) item.attackSpeed = WYNNITEM_ATTACK_SPEED_SUPER_FAST;
             else ERR_RET(true, ERR_FAILURE, (WynnItemList){0});
         }
 
@@ -189,148 +189,151 @@ static WynnItemList wynnitems_load_json(
             if (pClassReq != NULL)
             {
                 const char* class = json_to_string(pClassReq);
-                if (!strcmp(class, "mage")) pItem->reqs.class = WYNNITEM_CLASS_ARCHER;
-                else if (!strcmp(class, "warrior")) pItem->reqs.class = WYNNITEM_CLASS_WARRIOR;
-                else if (!strcmp(class, "archer")) pItem->reqs.class = WYNNITEM_CLASS_ARCHER;
-                else if (!strcmp(class, "assassin")) pItem->reqs.class = WYNNITEM_CLASS_ASSASSIN;
-                else if (!strcmp(class, "shaman")) pItem->reqs.class = WYNNITEM_CLASS_SHAMAN;
+                if (!strcmp(class, "mage")) item.reqs.class = WYNNITEM_CLASS_ARCHER;
+                else if (!strcmp(class, "warrior")) item.reqs.class = WYNNITEM_CLASS_WARRIOR;
+                else if (!strcmp(class, "archer")) item.reqs.class = WYNNITEM_CLASS_ARCHER;
+                else if (!strcmp(class, "assassin")) item.reqs.class = WYNNITEM_CLASS_ASSASSIN;
+                else if (!strcmp(class, "shaman")) item.reqs.class = WYNNITEM_CLASS_SHAMAN;
                 else ERR_RET(true, ERR_FAILURE, (WynnItemList){0});
             }
 
-            pItem->reqs.level = min_max_entry(pReqsSection, "level");
-            pItem->reqs.strength = min_max_entry(pReqsSection, "strength");
-            pItem->reqs.dexterity = min_max_entry(pReqsSection, "dexterity");
-            pItem->reqs.defence = min_max_entry(pReqsSection, "defence");
-            pItem->reqs.agility = min_max_entry(pReqsSection, "agility");
-            pItem->reqs.intelligence = min_max_entry(pReqsSection, "intelligence");
+            item.reqs.level = min_max_entry(pReqsSection, "level");
+            item.reqs.strength = min_max_entry(pReqsSection, "strength");
+            item.reqs.dexterity = min_max_entry(pReqsSection, "dexterity");
+            item.reqs.defence = min_max_entry(pReqsSection, "defence");
+            item.reqs.agility = min_max_entry(pReqsSection, "agility");
+            item.reqs.intelligence = min_max_entry(pReqsSection, "intelligence");
         }
 
         JsonValue* pBaseSection = json_object_get(pJsonItem, (JsonKey){"base"});
         if (pBaseSection != NULL)
         {
-            pItem->base.averageDPS = min_max_entry(pBaseSection, "averageDPS");
-            pItem->base.damage = min_max_entry(pBaseSection, "damage");
-            pItem->base.earthDamage = min_max_entry(pBaseSection, "earthDamage");
-            pItem->base.thunderDamage = min_max_entry(pBaseSection, "thunderDamage");
-            pItem->base.fireDamage = min_max_entry(pBaseSection, "fireDamage");
-            pItem->base.airDamage = min_max_entry(pBaseSection, "airDamage");
-            pItem->base.waterDamage = min_max_entry(pBaseSection, "waterDamage");
+            item.base.averageDPS = min_max_entry(pBaseSection, "averageDPS");
+            item.base.damage = min_max_entry(pBaseSection, "damage");
+            item.base.earthDamage = min_max_entry(pBaseSection, "earthDamage");
+            item.base.thunderDamage = min_max_entry(pBaseSection, "thunderDamage");
+            item.base.fireDamage = min_max_entry(pBaseSection, "fireDamage");
+            item.base.airDamage = min_max_entry(pBaseSection, "airDamage");
+            item.base.waterDamage = min_max_entry(pBaseSection, "waterDamage");
 
-            pItem->base.health = min_max_entry(pBaseSection, "health");
-            pItem->base.earthDefence = min_max_entry(pBaseSection, "earthDefence");
-            pItem->base.thunderDefence = min_max_entry(pBaseSection, "thunderDefence");
-            pItem->base.fireDefence = min_max_entry(pBaseSection, "fireDefence");
-            pItem->base.airDefence = min_max_entry(pBaseSection, "airDefence");
-            pItem->base.waterDefence = min_max_entry(pBaseSection, "waterDefence");
+            item.base.health = min_max_entry(pBaseSection, "health");
+            item.base.earthDefence = min_max_entry(pBaseSection, "earthDefence");
+            item.base.thunderDefence = min_max_entry(pBaseSection, "thunderDefence");
+            item.base.fireDefence = min_max_entry(pBaseSection, "fireDefence");
+            item.base.airDefence = min_max_entry(pBaseSection, "airDefence");
+            item.base.waterDefence = min_max_entry(pBaseSection, "waterDefence");
         }
 
         JsonValue* pIdsSection = json_object_get(pJsonItem, (JsonKey){"identifications"});
         if (pIdsSection != NULL)
         {
-            pItem->ids.rawAttackSpeed = min_max_entry(pIdsSection, "rawAttackSpeed");
+            item.ids.rawAttackSpeed = min_max_entry(pIdsSection, "rawAttackSpeed");
 
-            pItem->ids.rawStrength = min_max_entry(pIdsSection, "rawStrength");
-            pItem->ids.rawDexterity = min_max_entry(pIdsSection, "rawDexterity");
-            pItem->ids.rawDefence = min_max_entry(pIdsSection, "rawDefence");
-            pItem->ids.rawAgility = min_max_entry(pIdsSection, "rawAgility");
-            pItem->ids.rawIntelligence = min_max_entry(pIdsSection, "rawIntelligence");
+            item.ids.rawStrength = min_max_entry(pIdsSection, "rawStrength");
+            item.ids.rawDexterity = min_max_entry(pIdsSection, "rawDexterity");
+            item.ids.rawDefence = min_max_entry(pIdsSection, "rawDefence");
+            item.ids.rawAgility = min_max_entry(pIdsSection, "rawAgility");
+            item.ids.rawIntelligence = min_max_entry(pIdsSection, "rawIntelligence");
 
-            pItem->ids.elementalDamage = min_max_entry(pIdsSection, "elementalDamage");
-            pItem->ids.earthDamage = min_max_entry(pIdsSection, "earthDamage");
-            pItem->ids.thunderDamage = min_max_entry(pIdsSection, "thunderDamage");
-            pItem->ids.fireDamage = min_max_entry(pIdsSection, "fireDamage");
-            pItem->ids.airDamage = min_max_entry(pIdsSection, "airDamage");
-            pItem->ids.waterDamage = min_max_entry(pIdsSection, "waterDamage");
+            item.ids.elementalDamage = min_max_entry(pIdsSection, "elementalDamage");
+            item.ids.earthDamage = min_max_entry(pIdsSection, "earthDamage");
+            item.ids.thunderDamage = min_max_entry(pIdsSection, "thunderDamage");
+            item.ids.fireDamage = min_max_entry(pIdsSection, "fireDamage");
+            item.ids.airDamage = min_max_entry(pIdsSection, "airDamage");
+            item.ids.waterDamage = min_max_entry(pIdsSection, "waterDamage");
 
-            pItem->ids.elementalDefence = min_max_entry(pIdsSection, "elementalDefence");
-            pItem->ids.earthDefence = min_max_entry(pIdsSection, "earthDefence");
-            pItem->ids.airDefence = min_max_entry(pIdsSection, "airDefence");
-            pItem->ids.fireDefence = min_max_entry(pIdsSection, "fireDefence");
-            pItem->ids.thunderDefence = min_max_entry(pIdsSection, "thunderDefence");
-            pItem->ids.waterDefence = min_max_entry(pIdsSection, "waterDefence");
+            item.ids.elementalDefence = min_max_entry(pIdsSection, "elementalDefence");
+            item.ids.earthDefence = min_max_entry(pIdsSection, "earthDefence");
+            item.ids.airDefence = min_max_entry(pIdsSection, "airDefence");
+            item.ids.fireDefence = min_max_entry(pIdsSection, "fireDefence");
+            item.ids.thunderDefence = min_max_entry(pIdsSection, "thunderDefence");
+            item.ids.waterDefence = min_max_entry(pIdsSection, "waterDefence");
 
-            pItem->ids.rawElementalDamage = min_max_entry(pIdsSection, "rawElementalDamage");
-            pItem->ids.rawEarthDamage = min_max_entry(pIdsSection, "rawEarthDamage");
-            pItem->ids.rawThunderDamage = min_max_entry(pIdsSection, "rawThunderDamage");
-            pItem->ids.rawFireDamage = min_max_entry(pIdsSection, "rawFireDamage");
-            pItem->ids.rawAirDamage = min_max_entry(pIdsSection, "rawAirDamage");
-            pItem->ids.rawWaterDamage = min_max_entry(pIdsSection, "rawWaterDamage");
+            item.ids.rawElementalDamage = min_max_entry(pIdsSection, "rawElementalDamage");
+            item.ids.rawEarthDamage = min_max_entry(pIdsSection, "rawEarthDamage");
+            item.ids.rawThunderDamage = min_max_entry(pIdsSection, "rawThunderDamage");
+            item.ids.rawFireDamage = min_max_entry(pIdsSection, "rawFireDamage");
+            item.ids.rawAirDamage = min_max_entry(pIdsSection, "rawAirDamage");
+            item.ids.rawWaterDamage = min_max_entry(pIdsSection, "rawWaterDamage");
 
-            pItem->ids.mainAttackDamage = min_max_entry(pIdsSection, "mainAttackDamage");
-            pItem->ids.earthMainAttackDamage = min_max_entry(pIdsSection, "earthMainAttackDamage");
-            pItem->ids.thunderMainAttackDamage = min_max_entry(pIdsSection, "thunderMainAttackDamage");
-            pItem->ids.fireMainAttackDamage = min_max_entry(pIdsSection, "fireMainAttackDamage");
-            pItem->ids.airMainAttackDamage = min_max_entry(pIdsSection, "airMainAttackDamage");
-            pItem->ids.waterMainAttackDamage = min_max_entry(pIdsSection, "waterMainAttackDamage");
+            item.ids.mainAttackDamage = min_max_entry(pIdsSection, "mainAttackDamage");
+            item.ids.earthMainAttackDamage = min_max_entry(pIdsSection, "earthMainAttackDamage");
+            item.ids.thunderMainAttackDamage = min_max_entry(pIdsSection, "thunderMainAttackDamage");
+            item.ids.fireMainAttackDamage = min_max_entry(pIdsSection, "fireMainAttackDamage");
+            item.ids.airMainAttackDamage = min_max_entry(pIdsSection, "airMainAttackDamage");
+            item.ids.waterMainAttackDamage = min_max_entry(pIdsSection, "waterMainAttackDamage");
 
-            pItem->ids.rawMainAttackDamage = min_max_entry(pIdsSection, "rawMainAttackDamage");
-            pItem->ids.rawElementalMainAttackDamage = min_max_entry(pIdsSection, "rawElementalMainAttackDamage");
-            pItem->ids.rawEarthMainAttackDamage = min_max_entry(pIdsSection, "rawEarthMainAttackDamage");
-            pItem->ids.rawThunderMainAttackDamage = min_max_entry(pIdsSection, "rawThunderMainAttackDamage");
-            pItem->ids.rawFireMainAttackDamage = min_max_entry(pIdsSection, "rawFireMainAttackDamage");
-            pItem->ids.rawAirMainAttackDamage = min_max_entry(pIdsSection, "rawAirMainAttackDamage");
-            pItem->ids.rawWaterMainAttackDamage = min_max_entry(pIdsSection, "rawWaterMainAttackDamage");
+            item.ids.rawMainAttackDamage = min_max_entry(pIdsSection, "rawMainAttackDamage");
+            item.ids.rawElementalMainAttackDamage = min_max_entry(pIdsSection, "rawElementalMainAttackDamage");
+            item.ids.rawEarthMainAttackDamage = min_max_entry(pIdsSection, "rawEarthMainAttackDamage");
+            item.ids.rawThunderMainAttackDamage = min_max_entry(pIdsSection, "rawThunderMainAttackDamage");
+            item.ids.rawFireMainAttackDamage = min_max_entry(pIdsSection, "rawFireMainAttackDamage");
+            item.ids.rawAirMainAttackDamage = min_max_entry(pIdsSection, "rawAirMainAttackDamage");
+            item.ids.rawWaterMainAttackDamage = min_max_entry(pIdsSection, "rawWaterMainAttackDamage");
 
-            pItem->ids.spellDamage = min_max_entry(pIdsSection, "spellDamage");
-            pItem->ids.elementalSpellDamage = min_max_entry(pIdsSection, "elementalSpellDamage");
-            pItem->ids.fireSpellDamage = min_max_entry(pIdsSection, "fireSpellDamage");
-            pItem->ids.waterSpellDamage = min_max_entry(pIdsSection, "waterSpellDamage");
-            pItem->ids.earthSpellDamage = min_max_entry(pIdsSection, "earthSpellDamage");
-            pItem->ids.thunderSpellDamage = min_max_entry(pIdsSection, "thunderSpellDamage");
-            pItem->ids.airSpellDamage = min_max_entry(pIdsSection, "airSpellDamage");
+            item.ids.spellDamage = min_max_entry(pIdsSection, "spellDamage");
+            item.ids.elementalSpellDamage = min_max_entry(pIdsSection, "elementalSpellDamage");
+            item.ids.fireSpellDamage = min_max_entry(pIdsSection, "fireSpellDamage");
+            item.ids.waterSpellDamage = min_max_entry(pIdsSection, "waterSpellDamage");
+            item.ids.earthSpellDamage = min_max_entry(pIdsSection, "earthSpellDamage");
+            item.ids.thunderSpellDamage = min_max_entry(pIdsSection, "thunderSpellDamage");
+            item.ids.airSpellDamage = min_max_entry(pIdsSection, "airSpellDamage");
 
-            pItem->ids.rawSpellDamage = min_max_entry(pIdsSection, "rawSpellDamage");
-            pItem->ids.rawNeutralSpellDamage = min_max_entry(pIdsSection, "rawNeutralSpellDamage");
-            pItem->ids.rawElementalSpellDamage = min_max_entry(pIdsSection, "rawElementalSpellDamage");
-            pItem->ids.rawEarthSpellDamage = min_max_entry(pIdsSection, "rawEarthSpellDamage");
-            pItem->ids.rawThunderSpellDamage = min_max_entry(pIdsSection, "rawThunderSpellDamage");
-            pItem->ids.rawFireSpellDamage = min_max_entry(pIdsSection, "rawFireSpellDamage");
-            pItem->ids.rawAirSpellDamage = min_max_entry(pIdsSection, "rawAirSpellDamage");
-            pItem->ids.rawWaterSpellDamage = min_max_entry(pIdsSection, "rawWaterSpellDamage");
+            item.ids.rawSpellDamage = min_max_entry(pIdsSection, "rawSpellDamage");
+            item.ids.rawNeutralSpellDamage = min_max_entry(pIdsSection, "rawNeutralSpellDamage");
+            item.ids.rawElementalSpellDamage = min_max_entry(pIdsSection, "rawElementalSpellDamage");
+            item.ids.rawEarthSpellDamage = min_max_entry(pIdsSection, "rawEarthSpellDamage");
+            item.ids.rawThunderSpellDamage = min_max_entry(pIdsSection, "rawThunderSpellDamage");
+            item.ids.rawFireSpellDamage = min_max_entry(pIdsSection, "rawFireSpellDamage");
+            item.ids.rawAirSpellDamage = min_max_entry(pIdsSection, "rawAirSpellDamage");
+            item.ids.rawWaterSpellDamage = min_max_entry(pIdsSection, "rawWaterSpellDamage");
 
-            pItem->ids.healing = min_max_entry(pIdsSection, "healing");
-            pItem->ids.rawHealth = min_max_entry(pIdsSection, "rawHealth");
-            pItem->ids.healingEfficiency = min_max_entry(pIdsSection, "healingEfficiency");
-            pItem->ids.healthRegen = min_max_entry(pIdsSection, "healthRegen");
-            pItem->ids.healthRegenRaw = min_max_entry(pIdsSection, "healthRegenRaw");
-            pItem->ids.lifeSteal = min_max_entry(pIdsSection, "lifeSteal");
+            item.ids.healing = min_max_entry(pIdsSection, "healing");
+            item.ids.rawHealth = min_max_entry(pIdsSection, "rawHealth");
+            item.ids.healingEfficiency = min_max_entry(pIdsSection, "healingEfficiency");
+            item.ids.healthRegen = min_max_entry(pIdsSection, "healthRegen");
+            item.ids.healthRegenRaw = min_max_entry(pIdsSection, "healthRegenRaw");
+            item.ids.lifeSteal = min_max_entry(pIdsSection, "lifeSteal");
 
-            pItem->ids.manaRegen = min_max_entry(pIdsSection, "manaRegen");
-            pItem->ids.manaSteal = min_max_entry(pIdsSection, "manaSteal");
+            item.ids.manaRegen = min_max_entry(pIdsSection, "manaRegen");
+            item.ids.manaSteal = min_max_entry(pIdsSection, "manaSteal");
 
-            pItem->ids.sprint = min_max_entry(pIdsSection, "sprint");
-            pItem->ids.sprintRegen = min_max_entry(pIdsSection, "sprintRegen");
-            pItem->ids.walkSpeed = min_max_entry(pIdsSection, "walkSpeed");
-            pItem->ids.jumpHeight = min_max_entry(pIdsSection, "jumpHeight");
+            item.ids.sprint = min_max_entry(pIdsSection, "sprint");
+            item.ids.sprintRegen = min_max_entry(pIdsSection, "sprintRegen");
+            item.ids.walkSpeed = min_max_entry(pIdsSection, "walkSpeed");
+            item.ids.jumpHeight = min_max_entry(pIdsSection, "jumpHeight");
 
-            pItem->ids.thorns = min_max_entry(pIdsSection, "thorns");
-            pItem->ids.reflection = min_max_entry(pIdsSection, "reflection");
-            pItem->ids.knockback = min_max_entry(pIdsSection, "knockback");
-            pItem->ids.exploding = min_max_entry(pIdsSection, "exploding");
-            pItem->ids.poison = min_max_entry(pIdsSection, "poison");
+            item.ids.thorns = min_max_entry(pIdsSection, "thorns");
+            item.ids.reflection = min_max_entry(pIdsSection, "reflection");
+            item.ids.knockback = min_max_entry(pIdsSection, "knockback");
+            item.ids.exploding = min_max_entry(pIdsSection, "exploding");
+            item.ids.poison = min_max_entry(pIdsSection, "poison");
 
-            pItem->ids.stealing = min_max_entry(pIdsSection, "stealing");
-            pItem->ids.xpBonus = min_max_entry(pIdsSection, "xpBonus");
-            pItem->ids.lootBonus = min_max_entry(pIdsSection, "lootBonus");
-            pItem->ids.soulPointRegen = min_max_entry(pIdsSection, "soulPointRegen");
+            item.ids.stealing = min_max_entry(pIdsSection, "stealing");
+            item.ids.xpBonus = min_max_entry(pIdsSection, "xpBonus");
+            item.ids.lootBonus = min_max_entry(pIdsSection, "lootBonus");
+            item.ids.soulPointRegen = min_max_entry(pIdsSection, "soulPointRegen");
 
-            pItem->ids.SpellCost1st = min_max_entry(pIdsSection, "1stSpellCost");
-            pItem->ids.SpellCost2nd = min_max_entry(pIdsSection, "2ndSpellCost");
-            pItem->ids.SpellCost3rd = min_max_entry(pIdsSection, "3rdSpellCost");
-            pItem->ids.SpellCost4th = min_max_entry(pIdsSection, "4thSpellCost");
+            item.ids.SpellCost1st = min_max_entry(pIdsSection, "1stSpellCost");
+            item.ids.SpellCost2nd = min_max_entry(pIdsSection, "2ndSpellCost");
+            item.ids.SpellCost3rd = min_max_entry(pIdsSection, "3rdSpellCost");
+            item.ids.SpellCost4th = min_max_entry(pIdsSection, "4thSpellCost");
 
-            pItem->ids.rawSpellCost1st = min_max_entry(pIdsSection, "raw1stSpellCost");
-            pItem->ids.rawSpellCost2nd = min_max_entry(pIdsSection, "raw2ndSpellCost");
-            pItem->ids.rawSpellCost3rd = min_max_entry(pIdsSection, "raw3rdSpellCost");
-            pItem->ids.rawSpellCost4th = min_max_entry(pIdsSection, "raw4thSpellCost");
+            item.ids.rawSpellCost1st = min_max_entry(pIdsSection, "raw1stSpellCost");
+            item.ids.rawSpellCost2nd = min_max_entry(pIdsSection, "raw2ndSpellCost");
+            item.ids.rawSpellCost3rd = min_max_entry(pIdsSection, "raw3rdSpellCost");
+            item.ids.rawSpellCost4th = min_max_entry(pIdsSection, "raw4thSpellCost");
 
-            pItem->ids.slowEnemy = min_max_entry(pIdsSection, "slowEnemy");
-            pItem->ids.weakenEnemy = min_max_entry(pIdsSection, "weakenEnemy");
+            item.ids.slowEnemy = min_max_entry(pIdsSection, "slowEnemy");
+            item.ids.weakenEnemy = min_max_entry(pIdsSection, "weakenEnemy");
         }
 
-        pItem->pName = wynnitem_name_pool_alloc(pNamePool);
-        memset(pItem->pName->str, 0, sizeof(pItem->pName->str));
-        strncpy_s(pItem->pName->str, sizeof(pItem->pName->str), itemName.str, sizeof(itemName.str));
+        item.pName = wynnitem_name_pool_alloc(pNamePool);
+        memset(item.pName->str, 0, sizeof(item.pName->str));
+        strncpy_s(item.pName->str, sizeof(item.pName->str), itemName.str, sizeof(itemName.str));
+
+        WynnItem* pItem = wynnitem_pool_alloc(pItemPool);
+        *pItem = item;
 
         wynnitem_list_append(&itemList, pItem);
     }
@@ -650,139 +653,141 @@ static WynnItemList wynnitem_load_bin(
     for (size_t i = 0; i < header.count; i++)
     {
         struct wynnitem_bin_item* pBinItem = ((struct wynnitem_bin_item*)pData) + i;
+        WynnItem item = {0};
+
+        item.pName = wynnitem_name_pool_alloc(pNamePool);
+        memcpy_s(item.pName->str, sizeof(item.pName->str), pBinItem->name, sizeof(pBinItem->name));
+        
+        item.type = pBinItem->type;
+        item.tier = pBinItem->tier;
+        item.powderSlots = pBinItem->powderSlots;
+        item.attackSpeed = pBinItem->attackSpeed;
+
+        item.reqs.class = pBinItem->reqs.class;
+        item.reqs.level = pBinItem->reqs.level;
+        item.reqs.strength = pBinItem->reqs.strength;
+        item.reqs.dexterity = pBinItem->reqs.dexterity;
+        item.reqs.defence = pBinItem->reqs.defence;
+        item.reqs.agility = pBinItem->reqs.agility;
+        item.reqs.intelligence = pBinItem->reqs.intelligence;
+
+        item.base.averageDPS = pBinItem->base.averageDPS;
+        item.base.damage = pBinItem->base.damage;
+        item.base.earthDamage = pBinItem->base.earthDamage;
+        item.base.thunderDamage = pBinItem->base.thunderDamage;
+        item.base.fireDamage = pBinItem->base.fireDamage;
+        item.base.airDamage = pBinItem->base.airDamage;
+        item.base.waterDamage = pBinItem->base.waterDamage;
+
+        item.base.health = pBinItem->base.health;
+        item.base.earthDefence = pBinItem->base.earthDefence;
+        item.base.thunderDefence = pBinItem->base.thunderDefence;
+        item.base.fireDefence = pBinItem->base.fireDefence;
+        item.base.airDefence = pBinItem->base.airDefence;
+        item.base.waterDefence = pBinItem->base.waterDefence;
+
+        item.ids.rawAttackSpeed = pBinItem->ids.rawAttackSpeed;
+        item.ids.rawStrength = pBinItem->ids.rawStrength;
+        item.ids.rawDexterity = pBinItem->ids.rawDexterity;
+        item.ids.rawDefence = pBinItem->ids.rawDefence;
+        item.ids.rawAgility = pBinItem->ids.rawAgility;
+        item.ids.rawIntelligence = pBinItem->ids.rawIntelligence;
+
+        item.ids.elementalDamage = pBinItem->ids.elementalDamage;
+        item.ids.earthDamage = pBinItem->ids.earthDamage;
+        item.ids.thunderDamage = pBinItem->ids.thunderDamage;
+        item.ids.fireDamage = pBinItem->ids.fireDamage;
+        item.ids.airDamage = pBinItem->ids.airDamage;
+        item.ids.waterDamage = pBinItem->ids.waterDamage;
+
+        item.ids.elementalDefence = pBinItem->ids.elementalDefence;
+        item.ids.earthDefence = pBinItem->ids.earthDefence;
+        item.ids.thunderDefence = pBinItem->ids.thunderDefence;
+        item.ids.fireDefence = pBinItem->ids.fireDefence;
+        item.ids.airDefence = pBinItem->ids.airDefence;
+        item.ids.waterDefence = pBinItem->ids.waterDefence;
+
+        item.ids.rawElementalDamage = pBinItem->ids.rawElementalDamage;
+        item.ids.rawEarthDamage = pBinItem->ids.rawEarthDamage;
+        item.ids.rawThunderDamage = pBinItem->ids.rawThunderDamage;
+        item.ids.rawFireDamage = pBinItem->ids.rawFireDamage;
+        item.ids.rawAirDamage = pBinItem->ids.rawAirDamage;
+        item.ids.rawWaterDamage = pBinItem->ids.rawWaterDamage;
+
+        item.ids.mainAttackDamage = pBinItem->ids.mainAttackDamage;
+        item.ids.earthMainAttackDamage = pBinItem->ids.earthMainAttackDamage;
+        item.ids.thunderMainAttackDamage = pBinItem->ids.thunderMainAttackDamage;
+        item.ids.fireMainAttackDamage = pBinItem->ids.fireMainAttackDamage;
+        item.ids.airMainAttackDamage = pBinItem->ids.airMainAttackDamage;
+        item.ids.waterMainAttackDamage = pBinItem->ids.waterMainAttackDamage;
+
+        item.ids.rawMainAttackDamage = pBinItem->ids.rawMainAttackDamage;
+        item.ids.rawElementalMainAttackDamage = pBinItem->ids.rawElementalMainAttackDamage;
+        item.ids.rawEarthMainAttackDamage = pBinItem->ids.rawEarthMainAttackDamage;
+        item.ids.rawThunderMainAttackDamage = pBinItem->ids.rawThunderMainAttackDamage;
+        item.ids.rawFireMainAttackDamage = pBinItem->ids.rawFireMainAttackDamage;
+        item.ids.rawAirMainAttackDamage = pBinItem->ids.rawAirMainAttackDamage;
+        item.ids.rawWaterMainAttackDamage = pBinItem->ids.rawWaterMainAttackDamage;
+
+        item.ids.spellDamage = pBinItem->ids.spellDamage;
+        item.ids.elementalSpellDamage = pBinItem->ids.elementalSpellDamage;
+        item.ids.earthSpellDamage = pBinItem->ids.earthSpellDamage;
+        item.ids.thunderSpellDamage = pBinItem->ids.thunderSpellDamage;
+        item.ids.fireSpellDamage = pBinItem->ids.fireSpellDamage;
+        item.ids.airSpellDamage = pBinItem->ids.airSpellDamage;
+        item.ids.waterSpellDamage = pBinItem->ids.waterSpellDamage;
+
+        item.ids.rawSpellDamage = pBinItem->ids.rawSpellDamage;
+        item.ids.rawNeutralSpellDamage = pBinItem->ids.rawNeutralSpellDamage;
+        item.ids.rawElementalSpellDamage = pBinItem->ids.rawElementalSpellDamage;
+        item.ids.rawEarthSpellDamage = pBinItem->ids.rawEarthSpellDamage;
+        item.ids.rawThunderSpellDamage = pBinItem->ids.rawThunderSpellDamage;
+        item.ids.rawFireSpellDamage = pBinItem->ids.rawFireSpellDamage;
+        item.ids.rawAirSpellDamage = pBinItem->ids.rawAirSpellDamage;
+        item.ids.rawWaterSpellDamage = pBinItem->ids.rawWaterSpellDamage;
+
+        item.ids.healing = pBinItem->ids.healing;
+        item.ids.rawHealth = pBinItem->ids.rawHealth;
+        item.ids.healingEfficiency = pBinItem->ids.healingEfficiency;
+        item.ids.healthRegen = pBinItem->ids.healthRegen;
+        item.ids.healthRegenRaw = pBinItem->ids.healthRegenRaw;
+        item.ids.lifeSteal = pBinItem->ids.lifeSteal;
+
+        item.ids.manaRegen = pBinItem->ids.manaRegen;
+        item.ids.manaSteal = pBinItem->ids.manaSteal;
+
+        item.ids.sprint = pBinItem->ids.sprint;
+        item.ids.sprintRegen = pBinItem->ids.sprintRegen;
+        item.ids.walkSpeed = pBinItem->ids.walkSpeed;
+        item.ids.jumpHeight = pBinItem->ids.jumpHeight;
+
+        item.ids.thorns = pBinItem->ids.thorns;
+        item.ids.reflection = pBinItem->ids.reflection;
+        item.ids.knockback = pBinItem->ids.knockback;
+        item.ids.exploding = pBinItem->ids.exploding;
+        item.ids.poison = pBinItem->ids.poison;
+
+        item.ids.stealing = pBinItem->ids.stealing;
+        item.ids.xpBonus = pBinItem->ids.xpBonus;
+        item.ids.lootBonus = pBinItem->ids.lootBonus;
+        item.ids.soulPointRegen = pBinItem->ids.soulPointRegen; // May change in next update
+
+        item.ids.SpellCost1st = pBinItem->ids.SpellCost1st;
+        item.ids.SpellCost2nd = pBinItem->ids.SpellCost2nd;
+        item.ids.SpellCost3rd = pBinItem->ids.SpellCost3rd;
+        item.ids.SpellCost4th = pBinItem->ids.SpellCost4th;
+
+        item.ids.rawSpellCost1st = pBinItem->ids.rawSpellCost1st;
+        item.ids.rawSpellCost2nd = pBinItem->ids.rawSpellCost2nd;
+        item.ids.rawSpellCost3rd = pBinItem->ids.rawSpellCost3rd;
+        item.ids.rawSpellCost4th = pBinItem->ids.rawSpellCost4th;
+        
+        item.ids.slowEnemy = pBinItem->ids.slowEnemy;
+        item.ids.weakenEnemy = pBinItem->ids.weakenEnemy;
 
         WynnItem* pItem = wynnitem_pool_alloc(pItemPool);
+        *pItem = item;
         wynnitem_list_append(&itemList, pItem);
-
-        pItem->pName = wynnitem_name_pool_alloc(pNamePool);
-        memcpy_s(pItem->pName->str, sizeof(pItem->pName->str), pBinItem->name, sizeof(pBinItem->name));
-        
-        pItem->type = pBinItem->type;
-        pItem->tier = pBinItem->tier;
-        pItem->powderSlots = pBinItem->powderSlots;
-        pItem->attackSpeed = pBinItem->attackSpeed;
-
-        pItem->reqs.class = pBinItem->reqs.class;
-        pItem->reqs.level = pBinItem->reqs.level;
-        pItem->reqs.strength = pBinItem->reqs.strength;
-        pItem->reqs.dexterity = pBinItem->reqs.dexterity;
-        pItem->reqs.defence = pBinItem->reqs.defence;
-        pItem->reqs.agility = pBinItem->reqs.agility;
-        pItem->reqs.intelligence = pBinItem->reqs.intelligence;
-
-        pItem->base.averageDPS = pBinItem->base.averageDPS;
-        pItem->base.damage = pBinItem->base.damage;
-        pItem->base.earthDamage = pBinItem->base.earthDamage;
-        pItem->base.thunderDamage = pBinItem->base.thunderDamage;
-        pItem->base.fireDamage = pBinItem->base.fireDamage;
-        pItem->base.airDamage = pBinItem->base.airDamage;
-        pItem->base.waterDamage = pBinItem->base.waterDamage;
-
-        pItem->base.health = pBinItem->base.health;
-        pItem->base.earthDefence = pBinItem->base.earthDefence;
-        pItem->base.thunderDefence = pBinItem->base.thunderDefence;
-        pItem->base.fireDefence = pBinItem->base.fireDefence;
-        pItem->base.airDefence = pBinItem->base.airDefence;
-        pItem->base.waterDefence = pBinItem->base.waterDefence;
-
-        pItem->ids.rawAttackSpeed = pBinItem->ids.rawAttackSpeed;
-        pItem->ids.rawStrength = pBinItem->ids.rawStrength;
-        pItem->ids.rawDexterity = pBinItem->ids.rawDexterity;
-        pItem->ids.rawDefence = pBinItem->ids.rawDefence;
-        pItem->ids.rawAgility = pBinItem->ids.rawAgility;
-        pItem->ids.rawIntelligence = pBinItem->ids.rawIntelligence;
-
-        pItem->ids.elementalDamage = pBinItem->ids.elementalDamage;
-        pItem->ids.earthDamage = pBinItem->ids.earthDamage;
-        pItem->ids.thunderDamage = pBinItem->ids.thunderDamage;
-        pItem->ids.fireDamage = pBinItem->ids.fireDamage;
-        pItem->ids.airDamage = pBinItem->ids.airDamage;
-        pItem->ids.waterDamage = pBinItem->ids.waterDamage;
-
-        pItem->ids.elementalDefence = pBinItem->ids.elementalDefence;
-        pItem->ids.earthDefence = pBinItem->ids.earthDefence;
-        pItem->ids.thunderDefence = pBinItem->ids.thunderDefence;
-        pItem->ids.fireDefence = pBinItem->ids.fireDefence;
-        pItem->ids.airDefence = pBinItem->ids.airDefence;
-        pItem->ids.waterDefence = pBinItem->ids.waterDefence;
-
-        pItem->ids.rawElementalDamage = pBinItem->ids.rawElementalDamage;
-        pItem->ids.rawEarthDamage = pBinItem->ids.rawEarthDamage;
-        pItem->ids.rawThunderDamage = pBinItem->ids.rawThunderDamage;
-        pItem->ids.rawFireDamage = pBinItem->ids.rawFireDamage;
-        pItem->ids.rawAirDamage = pBinItem->ids.rawAirDamage;
-        pItem->ids.rawWaterDamage = pBinItem->ids.rawWaterDamage;
-
-        pItem->ids.mainAttackDamage = pBinItem->ids.mainAttackDamage;
-        pItem->ids.earthMainAttackDamage = pBinItem->ids.earthMainAttackDamage;
-        pItem->ids.thunderMainAttackDamage = pBinItem->ids.thunderMainAttackDamage;
-        pItem->ids.fireMainAttackDamage = pBinItem->ids.fireMainAttackDamage;
-        pItem->ids.airMainAttackDamage = pBinItem->ids.airMainAttackDamage;
-        pItem->ids.waterMainAttackDamage = pBinItem->ids.waterMainAttackDamage;
-
-        pItem->ids.rawMainAttackDamage = pBinItem->ids.rawMainAttackDamage;
-        pItem->ids.rawElementalMainAttackDamage = pBinItem->ids.rawElementalMainAttackDamage;
-        pItem->ids.rawEarthMainAttackDamage = pBinItem->ids.rawEarthMainAttackDamage;
-        pItem->ids.rawThunderMainAttackDamage = pBinItem->ids.rawThunderMainAttackDamage;
-        pItem->ids.rawFireMainAttackDamage = pBinItem->ids.rawFireMainAttackDamage;
-        pItem->ids.rawAirMainAttackDamage = pBinItem->ids.rawAirMainAttackDamage;
-        pItem->ids.rawWaterMainAttackDamage = pBinItem->ids.rawWaterMainAttackDamage;
-
-        pItem->ids.spellDamage = pBinItem->ids.spellDamage;
-        pItem->ids.elementalSpellDamage = pBinItem->ids.elementalSpellDamage;
-        pItem->ids.earthSpellDamage = pBinItem->ids.earthSpellDamage;
-        pItem->ids.thunderSpellDamage = pBinItem->ids.thunderSpellDamage;
-        pItem->ids.fireSpellDamage = pBinItem->ids.fireSpellDamage;
-        pItem->ids.airSpellDamage = pBinItem->ids.airSpellDamage;
-        pItem->ids.waterSpellDamage = pBinItem->ids.waterSpellDamage;
-
-        pItem->ids.rawSpellDamage = pBinItem->ids.rawSpellDamage;
-        pItem->ids.rawNeutralSpellDamage = pBinItem->ids.rawNeutralSpellDamage;
-        pItem->ids.rawElementalSpellDamage = pBinItem->ids.rawElementalSpellDamage;
-        pItem->ids.rawEarthSpellDamage = pBinItem->ids.rawEarthSpellDamage;
-        pItem->ids.rawThunderSpellDamage = pBinItem->ids.rawThunderSpellDamage;
-        pItem->ids.rawFireSpellDamage = pBinItem->ids.rawFireSpellDamage;
-        pItem->ids.rawAirSpellDamage = pBinItem->ids.rawAirSpellDamage;
-        pItem->ids.rawWaterSpellDamage = pBinItem->ids.rawWaterSpellDamage;
-
-        pItem->ids.healing = pBinItem->ids.healing;
-        pItem->ids.rawHealth = pBinItem->ids.rawHealth;
-        pItem->ids.healingEfficiency = pBinItem->ids.healingEfficiency;
-        pItem->ids.healthRegen = pBinItem->ids.healthRegen;
-        pItem->ids.healthRegenRaw = pBinItem->ids.healthRegenRaw;
-        pItem->ids.lifeSteal = pBinItem->ids.lifeSteal;
-
-        pItem->ids.manaRegen = pBinItem->ids.manaRegen;
-        pItem->ids.manaSteal = pBinItem->ids.manaSteal;
-
-        pItem->ids.sprint = pBinItem->ids.sprint;
-        pItem->ids.sprintRegen = pBinItem->ids.sprintRegen;
-        pItem->ids.walkSpeed = pBinItem->ids.walkSpeed;
-        pItem->ids.jumpHeight = pBinItem->ids.jumpHeight;
-
-        pItem->ids.thorns = pBinItem->ids.thorns;
-        pItem->ids.reflection = pBinItem->ids.reflection;
-        pItem->ids.knockback = pBinItem->ids.knockback;
-        pItem->ids.exploding = pBinItem->ids.exploding;
-        pItem->ids.poison = pBinItem->ids.poison;
-
-        pItem->ids.stealing = pBinItem->ids.stealing;
-        pItem->ids.xpBonus = pBinItem->ids.xpBonus;
-        pItem->ids.lootBonus = pBinItem->ids.lootBonus;
-        pItem->ids.soulPointRegen = pBinItem->ids.soulPointRegen; // May change in next update
-
-        pItem->ids.SpellCost1st = pBinItem->ids.SpellCost1st;
-        pItem->ids.SpellCost2nd = pBinItem->ids.SpellCost2nd;
-        pItem->ids.SpellCost3rd = pBinItem->ids.SpellCost3rd;
-        pItem->ids.SpellCost4th = pBinItem->ids.SpellCost4th;
-
-        pItem->ids.rawSpellCost1st = pBinItem->ids.rawSpellCost1st;
-        pItem->ids.rawSpellCost2nd = pBinItem->ids.rawSpellCost2nd;
-        pItem->ids.rawSpellCost3rd = pBinItem->ids.rawSpellCost3rd;
-        pItem->ids.rawSpellCost4th = pBinItem->ids.rawSpellCost4th;
-        
-        pItem->ids.slowEnemy = pBinItem->ids.slowEnemy;
-        pItem->ids.weakenEnemy = pBinItem->ids.weakenEnemy;
     }
 
     return itemList;
