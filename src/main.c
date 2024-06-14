@@ -68,7 +68,6 @@ static WynnItem* select_search_item(WynnItemList* pItemList)
 int main(int argc, char* argv[])
 {
     WynnItemList* pItemList = wynnitems_load(DB_BIN_PATH, DB_URL);
-    recommend_structure_bytes(pItemList);
 
     for (;;)
     {
