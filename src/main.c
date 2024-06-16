@@ -13,12 +13,12 @@
 
 int main(int argc, char* argv[])
 {
-    Thread thrd = thread_start(iteminterface_run, NULL);
+    iteminterface_run(NULL);
 
     WynnItemList* pItemList = wynnitems_load(DB_BIN_PATH, DB_URL);
 
     // itemsearch_start(pItemList);
-    thread_wait(&thrd);
+    // thread_wait(&thrd);
 
     wynnitems_unload();
     return 0;
