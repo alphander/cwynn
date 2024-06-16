@@ -93,7 +93,7 @@ WynnItemList* wynnitems_load(char* dbBinPath, char* dbUrl)
     return &gItemList;
 }
 
-void wynnitem_unload()
+void wynnitems_unload()
 {
     ERR_RET(!isInit, ERR_FAILURE,);
 

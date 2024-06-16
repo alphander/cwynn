@@ -39,7 +39,7 @@ LIBS = ""
 
 # library flags 
 LDFLAGS = {
-    "all" : "-ltoolkit", 
+    "all" : "-ltoolkit -lraylib", 
     "nt" : "-lwininet",
     "posix" : "-pthread -lcurl"
 }
@@ -261,66 +261,71 @@ def make_directories(dirs):
 ##############################################################################
 
 if __name__ == "__main__":
-    args = sys.argv
+    try:
+        args = sys.argv
 
-    # Flags
-    cflags = list(CFLAGS.values())[0]
-    for arg in args:
-        if not arg in CFLAGS.keys():
-            continue
-        cflags = CFLAGS[arg]
-        break
+        # Flags
+        cflags = list(CFLAGS.values())[0]
+        for arg in args:
+            if not arg in CFLAGS.keys():
+                continue
+            cflags = CFLAGS[arg]
+            break
 
-    # Running
-    if "r" in args or "run" in args:
-        print("Running program...")
-        command = f"{BIN}/{OUT}"
-        print(command, "\n")
-        result = subprocess.run(command); # Learn to handle this error.
-        print(f"\nProgram ended with error code: {result.returncode}")
-        exit()
+        # Running
+        if "r" in args or "run" in args:
+            print("Running program...")
+            command = f"{BIN}/{OUT}"
+            print(command, "\n")
+            result = subprocess.run(command); # Learn to handle this error.
+            print(f"\nProgram ended with error code: {result.returncode}")
+            exit()
 
-    # Default files
-    if not os.path.exists(".gitignore"):
-        with open(".gitignore", "w") as file:
-            file.write("*.o\n*.exe\nbin/*")
+        # Default files
+        if not os.path.exists(".gitignore"):
+            with open(".gitignore", "w") as file:
+                file.write("*.o\n*.exe\nbin/*")
 
-    os.makedirs(SRC, exist_ok=True);
-    for dir in [LIB, INC, OBJ, BIN]:
-        os.makedirs(dir, exist_ok=True);
-        open(os.path.sep.join([dir, ".gitkeep"]), 'a').close()
+        os.makedirs(SRC, exist_ok=True);
+        for dir in [LIB, INC, OBJ, BIN]:
+            os.makedirs(dir, exist_ok=True);
+            open(os.path.sep.join([dir, ".gitkeep"]), 'a').close()
 
-    # Cleaning
-    if "c" in args or "clean" in args:
-        print("Removing temporary files...")
-        clean()
-        print("Temporary files removed!")
-        exit()
-    
-    print("Starting build...")
-
-    source_files, object_files = find_files()
-
-    # Compile
-    if "f" in args or "fast" in args:
-        cflags += " -w"
-        threads = []
-        for source_file, object_file in zip(source_files, object_files):
-            thread = threading.Thread(target=compile, args=(source_file, object_file, cflags))
-            threads.append(thread)
-            thread.start()
-
-        for thread in threads:
-            thread.join()
-    else:
-        for source_file, object_file in zip(source_files, object_files):
-            compile(source_file, object_file, cflags)
-
-    # Link
-    if "l" in args or "lib" in args:
-        link_lib(RCS, object_files, LDFLAGS)
-        copy_headers(f"{BIN}/{INC}/{LIB_FOLDER}")
-    else:
-        link_exe(f"{BIN}/{OUT}", object_files, cflags, LDFLAGS)
+        # Cleaning
+        if "c" in args or "clean" in args:
+            print("Removing temporary files...")
+            clean()
+            print("Temporary files removed!")
+            exit()
         
-    print("Build complete!")
+        print("Starting build...")
+
+        source_files, object_files = find_files()
+
+        # Compile
+        if "f" in args or "fast" in args:
+            cflags += " -w"
+            threads = []
+            for source_file, object_file in zip(source_files, object_files):
+                thread = threading.Thread(target=compile, args=(source_file, object_file, cflags))
+                threads.append(thread)
+                thread.start()
+
+            for thread in threads:
+                thread.join()
+        else:
+            for source_file, object_file in zip(source_files, object_files):
+                compile(source_file, object_file, cflags)
+
+        # Link
+        if "l" in args or "lib" in args:
+            link_lib(RCS, object_files, LDFLAGS)
+            copy_headers(f"{BIN}/{INC}/{LIB_FOLDER}")
+        else:
+            link_exe(f"{BIN}/{OUT}", object_files, cflags, LDFLAGS)
+            
+        print("Build complete!")
+
+    except KeyboardInterrupt: # Don't want to deal with these
+        print("\nProgram ended forcibly")
+        exit()

@@ -10,7 +10,7 @@ static int cmp_func2(const void* pDataA, const void* pDataB)
     return *(int*)pDataA - *(int*)pDataB;
 }
 
-static const size_t randomArraySize = 100000;
+#define randomArraySize 100000
 static int randomArray[randomArraySize];
 
 void test_heap_or_list_sort()
