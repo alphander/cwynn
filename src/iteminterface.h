@@ -3,7 +3,6 @@
 
 typedef struct
 {
-    uint8_t powderSlots;
     int32_t attackSpeed;
     
     // Requirement
