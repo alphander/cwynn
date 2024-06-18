@@ -3,8 +3,109 @@
 #include <ctype.h>
 #include "wynnitems.h"
 #include "itemloader.h"
-#include "itemscores.h"
-#include "itemlevenshtein.h"
+
+// ################################################################################
+// Levenshtein distance
+// "How do Spell Checkers work? Levenshtein Edit Distance" 
+// Creel: (https://www.youtube.com/watch?v=Cu7Tl7FGigQ)
+//
+// ################################################################################
+
+;
+
+uint32_t levenshtein(char* str, char* testStr)
+{
+    size_t strLen = strnlen(str, sizeof(WynnItemName)) + 1;
+    size_t testStrLen = strnlen(testStr, sizeof(WynnItemName)) + 1;
+
+    char* strA = strLen > testStrLen ? str : testStr;
+    size_t strALen = strLen > testStrLen ? strLen : testStrLen;
+    char* strB = strLen > testStrLen ? testStr : str;
+    size_t strBLen = strLen > testStrLen ? testStrLen : strLen;
+
+    uint32_t array[strBLen];
+    for (size_t i = 0; i < strBLen; ++i) array[i] = i;
+
+    uint32_t sub;
+    for (size_t i = 1; i < strALen; ++i)
+    {
+        sub = array[0];
+        array[0] = i;
+        for (size_t j = 1; j < strBLen; ++j) 
+        {
+            uint32_t ins = array[j];
+            uint32_t del = array[j - 1];
+            
+            uint32_t acc = sub;
+            if (strA[i - 1] != strB[j - 1])
+            {
+                acc = ins < del ? ins : del;
+                acc = sub < acc ? sub : acc;
+                ++acc;
+            }
+            sub = array[j];
+            array[j] = acc;
+        }
+    }
+    return array[strBLen - 1];
+}
+
+static int levenshtein_cmp(
+    const struct levenshtein_item* pItemA, 
+    const struct levenshtein_item* pItemB)
+{
+    return pItemA->distance < pItemB->distance ? -1 : 1;
+}
+
+LevenshteinHeap levenshtein_sorted(char* itemName, WynnItemList* pItemList)
+{
+    LevenshteinHeap heap = levenshtein_heap_create(levenshtein_cmp);
+
+    WynnItem* pItem = NULL;
+    while (wynnitem_list_iter_next(pItemList, &pItem))
+    {
+        float score = levenshtein(itemName, pItem->pName->str);
+        levenshtein_heap_push(&heap, (struct levenshtein_item){score, pItem});
+    }
+
+    return heap;
+}
+
+// ################################################################################
+// Item recommender printing
+//
+//
+// ################################################################################
+
+
+
+static int wynnitem_score_cmp(const struct scored_item* pItemA, const struct scored_item* pItemB)
+{
+    return pItemA->score < pItemB->score ? -1 : 1;
+}
+
+void scored_items_print(WynnItem* pSearchItem, WynnItemList* pItemList)
+{
+    ItemScoreHeap itemScores = itemscore_heap_create(wynnitem_score_cmp);
+    WynnItem* pItem = NULL;
+    while (wynnitem_list_iter_next(pItemList, &pItem))
+    {
+        float score = wynnitem_similarity(pSearchItem, pItem);
+        itemscore_heap_push(&itemScores, (struct scored_item){score, pItem});
+    }
+
+    for (int i = 0; itemscore_heap_size(&itemScores) > 0 && i < 20;)
+    {
+        struct scored_item scoredItem = itemscore_heap_pop(&itemScores);
+        if (scoredItem.pItem->type != pSearchItem->type) continue;
+        if (!strcmp(scoredItem.pItem->pName->str, pSearchItem->pName->str)) continue;
+
+        printf("  %s %f\n", scoredItem.pItem->pName->str, scoredItem.score);
+        i++;
+    }
+    printf("\n");
+    itemscore_heap_destroy(&itemScores);
+}
 
 static WynnItem* select_search_item(WynnItemList* pItemList)
 {

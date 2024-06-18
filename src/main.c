@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <LTK/containers.h>
 #include <LTK/threading.h>
-#include "iteminterface.h"
+#include "interface.h"
 #include "wynnitems.h"
 #include "itemloader.h"
 #include "itemsearch.h"
