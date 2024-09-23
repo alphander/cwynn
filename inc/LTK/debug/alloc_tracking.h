@@ -1,7 +1,7 @@
 #ifndef ALLOC_TRACKER_H
 #define ALLOC_TRACKER_H
 
-#include "LTK\platform_defines.h"
+#include "platform_defines.h"
 
 #ifndef NDEBUG
 #include <stdint.h>

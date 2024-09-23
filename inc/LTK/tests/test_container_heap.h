@@ -1,6 +1,6 @@
 #ifndef TEST_CONTAINER_HEAP_H
 #define TEST_CONTAINER_HEAP_H
-#include "LTK\containers.h"
+#include "containers.h"
 
 static int cmp_func(const void* a, const void* b)
 {

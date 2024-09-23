@@ -1,7 +1,7 @@
 #ifndef TEST_CONTAINER_DICT_H
 #define TEST_CONTAINER_DICT_H
 
-#include "LTK\containers.h"
+#include "containers.h"
 
 DICT_GENERIC_EX(int, int, IntDict, intdict);
 

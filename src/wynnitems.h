@@ -1,8 +1,10 @@
 #ifndef WYNNBUILD_H
 #define WYNNBUILD_H
 
-#include "LTK/containers.h"
-#include "LTK/jsonparser.h"
+#include <LTK/containers.h>
+#include <LTK/jsonparser.h>
+
+#define lengthof(array) (sizeof(array) / sizeof(*array))
 
 static const char* wynnItemReqsNames[] = {
     "level",
@@ -432,11 +434,11 @@ struct wynnitem_ids{
     int32_t weakenEnemy;
 };
 
-typedef int32_t WynnItemIdArray[
-    sizeof(struct wynnitem_reqs) + 
-    sizeof(struct wynnitem_base) + 
-    sizeof(struct wynnitem_ids)
-];
+#define WYNNITEM_ID_ARRAY_SIZE\
+    sizeof(struct wynnitem_reqs) / sizeof(int32_t) +\
+    sizeof(struct wynnitem_base) / sizeof(int32_t) +\
+    sizeof(struct wynnitem_ids) / sizeof(int32_t)
+typedef int32_t WynnItemIdArray[WYNNITEM_ID_ARRAY_SIZE];
 
 typedef struct {
     WynnItemName* pName;
@@ -463,17 +465,27 @@ LIST_GENERIC_EX(WynnItem*, WynnItemList, wynnitem_list)
 
 typedef struct
 {
-    WynnItem* pHelmet;
-    WynnItem* pChestplate;
-    WynnItem* pLeggings;
-    WynnItem* pBoots;
-    WynnItem* pRing1;
-    WynnItem* pRing2;
-    WynnItem* pBracelet;
-    WynnItem* pNecklace;
-    WynnItem* pWeapon;
+    union {
+        WynnItem* pItems[9];
+        struct {
+            WynnItem* pHelmet;
+            WynnItem* pChestplate;
+            WynnItem* pLeggings;
+            WynnItem* pBoots;
+            WynnItem* pRing1;
+            WynnItem* pRing2;
+            WynnItem* pBracelet;
+            WynnItem* pNecklace;
+            WynnItem* pWeapon;
+        };
+    };
 } WynnBuild;
 
 float wynnitem_similarity(WynnItem* pItem, WynnItem* pTestItem);
+float wynnitem_get_value(size_t index);
+void wynnitem_set_value(size_t index, float value);
 
+void wynnitems_init(WynnItemList* pItemList);
+void wynnitems_cleanup();
+WynnBuild wynnitems_calculate_build(size_t numIters);
 #endif // WYNNBUILD_H

@@ -1,7 +1,7 @@
 #ifndef PROFILING_H
 #define PROFILING_H
 
-#include "LTK\platform_defines.h"
+#include "platform_defines.h"
 
 #ifndef NDEBUG
 #include <stddef.h> 

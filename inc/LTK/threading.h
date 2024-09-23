@@ -2,7 +2,7 @@
 #define THREADING_H
 
 #include <stdint.h>
-#include "LTK\platform_defines.h"
+#include "platform_defines.h"
 
 // https://stackoverflow.com/questions/18298280/how-to-declare-a-variable-as-thread-local-portably
 #ifndef thread_local

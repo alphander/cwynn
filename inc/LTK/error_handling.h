@@ -21,6 +21,8 @@ typedef enum
     ERR_OBJECT_NOT_INIT,
     ERR_OUT_OF_MEMORY,
     ERR_PARSING,
+    ERR_SHARED_LIBRARY_OPENING,
+    ERR_SHARED_LIBRARY_LOADING,
 } errval;
 
 struct errinfo

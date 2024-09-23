@@ -2,7 +2,7 @@
 #define TEST_CONTAINER_LIST_SORT_H
 
 #include <stdio.h>
-#include "LTK\containers.h"
+#include "containers.h"
 
 LIST_GENERIC_EX(int, IntList, intlist)
 

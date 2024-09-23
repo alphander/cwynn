@@ -47,46 +47,46 @@ WynnItemList* wynnitems_load(char* dbBinPath, char* dbUrl)
     uint64_t timeStart, timeEnd;
     if (dataio_isfile(dbBinPath))
     {
-        printf(YELLOW "Reading item database from (%s)...", dbBinPath);
+        printf(YELLOW"Reading item database from (%s)...", dbBinPath);
         timeStart = get_timing();
         uint8_t* pData = dataio_read(dbBinPath, NULL);
         gItemList = wynnitem_load_bin(pData, &gItemPool, &gNamePool);
         free(pData);
         timeEnd = get_timing();
-        printf(GREEN "Completed: %.3lfs\n" RESET, timing_to_float(timeStart, timeEnd));
+        printf(GREEN"Completed: %.3lfs\n"RESET, timing_to_float(timeStart, timeEnd));
     }
     else
     {
-        printf(YELLOW "Downloading item database from (%s)...", dbUrl);
+        printf(YELLOW"Downloading item database from (%s)...", dbUrl);
         timeStart = get_timing();
         size_t size = 0;
         char* jsonString = (char*)dataio_get(dbUrl, &size);
         timeEnd = get_timing();
-        printf(GREEN "Completed: %.3lfs\n" RESET, timing_to_float(timeStart, timeEnd));
+        printf(GREEN"Completed: %.3lfs\n"RESET, timing_to_float(timeStart, timeEnd));
 
-        printf(YELLOW "Parsing json...");
+        printf(YELLOW"Parsing json...");
         timeStart = get_timing();
         JsonPool jsonPool = json_pool_create();
         JsonValue* pRoot = json_parse(&jsonPool, jsonString);
         free(jsonString);
         timeEnd = get_timing();
-        printf(GREEN "Completed: %.3lfs\n" RESET, timing_to_float(timeStart, timeEnd));
+        printf(GREEN"Completed: %.3lfs\n"RESET, timing_to_float(timeStart, timeEnd));
 
-        printf(YELLOW "Loading items from json value tree...");
+        printf(YELLOW"Loading items from json value tree...");
         timeStart = get_timing();
         gItemList = wynnitems_load_json(pRoot, &gItemPool, &gNamePool);
         json_pool_destroy(&jsonPool);
         timeEnd = get_timing();
-        printf(GREEN "Completed: %.3lfs\n" RESET, timing_to_float(timeStart, timeEnd));
+        printf(GREEN"Completed: %.3lfs\n"RESET, timing_to_float(timeStart, timeEnd));
 
-        printf(YELLOW "Writing item database to (%s)...", dbBinPath);
+        printf(YELLOW"Writing item database to (%s)...", dbBinPath);
         timeStart = get_timing();
         size_t writeSize = 0;
         uint8_t* pWriteData = wynnitem_dump_bin(&gItemList, &writeSize);
         dataio_write(dbBinPath, pWriteData, writeSize);
         free(pWriteData);
         timeEnd = get_timing();
-        printf(GREEN "Completed: %.3lfs\n" RESET, timing_to_float(timeStart, timeEnd));
+        printf(GREEN"Completed: %.3lfs\n"RESET, timing_to_float(timeStart, timeEnd));
     }
 
     isInit = true;
@@ -137,36 +137,37 @@ static WynnItemList wynnitems_load_json(
     while ((pJsonItem = json_object_next(pRoot, &itemName)))
     {   
         WynnItem item = {0};
-        JsonValue* pTypeStr = NULL;
-        if ((pTypeStr = json_object_get(pJsonItem, (JsonKey){"type"})) ||
-            (pTypeStr = json_object_get(pJsonItem, (JsonKey){"accessoryType"})))
+        JsonValue* pTypeStr = json_object_get(pJsonItem, (JsonKey){"type"});
+        const char* type = json_to_string(pTypeStr);
+        if (!strcmp(type, "weapon"))
         {
-            const char* type = json_to_string(pTypeStr);
-            if (!strcmp(type, "helmet")) item.type = WYNNITEM_TYPE_HELMET;
-            else if (!strcmp(type, "chestplate")) item.type = WYNNITEM_TYPE_CHESTPLATE;
-            else if (!strcmp(type, "leggings")) item.type = WYNNITEM_TYPE_LEGGINGS;
-            else if (!strcmp(type, "boots")) item.type = WYNNITEM_TYPE_BOOTS;
-            else if (!strcmp(type, "ring")) item.type = WYNNITEM_TYPE_RING;
-            else if (!strcmp(type, "bracelet")) item.type = WYNNITEM_TYPE_BRACELET;
-            else if (!strcmp(type, "necklace")) item.type = WYNNITEM_TYPE_NECKLACE;
-            else if (!strcmp(type, "spear")) item.type = WYNNITEM_TYPE_WEAPON;
-            else if (!strcmp(type, "bow")) item.type = WYNNITEM_TYPE_WEAPON;
-            else if (!strcmp(type, "wand")) item.type = WYNNITEM_TYPE_WEAPON;
-            else if (!strcmp(type, "dagger")) item.type = WYNNITEM_TYPE_WEAPON;
-            else if (!strcmp(type, "relik")) item.type = WYNNITEM_TYPE_WEAPON;
+            item.type = WYNNITEM_TYPE_WEAPON;
+        }
+        else if (!strcmp(type, "armour"))
+        {
+            JsonValue* pArmourTypeValue = json_object_get(pJsonItem, (JsonKey){"armourType"});
+            const char* armourType = json_to_string(pArmourTypeValue);
+            if (!strcmp(armourType, "helmet")) item.type = WYNNITEM_TYPE_HELMET;
+            else if (!strcmp(armourType, "chestplate")) item.type = WYNNITEM_TYPE_CHESTPLATE;
+            else if (!strcmp(armourType, "leggings")) item.type = WYNNITEM_TYPE_LEGGINGS;
+            else if (!strcmp(armourType, "boots")) item.type = WYNNITEM_TYPE_BOOTS;
             else ERR_RET(true, ERR_FAILURE, (WynnItemList){0});
-        } 
+        }
         else continue;
+            // else if (!strcmp(type, "ring")) item.type = WYNNITEM_TYPE_RING;
+            // else if (!strcmp(type, "bracelet")) item.type = WYNNITEM_TYPE_BRACELET;
+            // else if (!strcmp(type, "necklace")) item.type = WYNNITEM_TYPE_NECKLACE;
+        
 
-        JsonValue* pTierStr = json_object_get(pJsonItem, (JsonKey){"tier"});
-        const char* tier = json_to_string(pTierStr);
-        if (!strcmp(tier, "common")) item.tier = WYNNITEM_TIER_COMMON;
-        else if (!strcmp(tier, "unique")) item.tier = WYNNITEM_TIER_UNIQUE;
-        else if (!strcmp(tier, "rare")) item.tier = WYNNITEM_TIER_RARE;
-        else if (!strcmp(tier, "legendary")) item.tier = WYNNITEM_TIER_LEGENDARY;
-        else if (!strcmp(tier, "fabled")) item.tier = WYNNITEM_TIER_FABLED;
-        else if (!strcmp(tier, "mythic")) item.tier = WYNNITEM_TIER_MYTHIC;
-        else if (!strcmp(tier, "set")) item.tier = WYNNITEM_TIER_SET;
+        JsonValue* pRarityStr = json_object_get(pJsonItem, (JsonKey){"rarity"});
+        const char* rarity = json_to_string(pRarityStr);
+        if (!strcmp(rarity, "common")) item.tier = WYNNITEM_TIER_COMMON;
+        else if (!strcmp(rarity, "unique")) item.tier = WYNNITEM_TIER_UNIQUE;
+        else if (!strcmp(rarity, "rare")) item.tier = WYNNITEM_TIER_RARE;
+        else if (!strcmp(rarity, "legendary")) item.tier = WYNNITEM_TIER_LEGENDARY;
+        else if (!strcmp(rarity, "fabled")) item.tier = WYNNITEM_TIER_FABLED;
+        else if (!strcmp(rarity, "mythic")) item.tier = WYNNITEM_TIER_MYTHIC;
+        else if (!strcmp(rarity, "set")) item.tier = WYNNITEM_TIER_SET;
         else ERR_RET(true, ERR_FAILURE, (WynnItemList){0});
 
         JsonValue* pAttackSpeedStr = json_object_get(pJsonItem, (JsonKey){"attackSpeed"});

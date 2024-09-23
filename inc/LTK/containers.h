@@ -139,6 +139,11 @@ size_t list_type_size(List* pList);
 /// @param[out] pMemoryOut Pointer to valid memory of length (stride * size)
 void list_to_array(List* pList, void* pMemoryOut);
 
+/// @brief Destroys List and returns internal memory
+/// @param[in] pList Pointer to valid List struct
+/// @return Pointer to List internal memory
+void* list_to_memory(List* pList);
+
 // ################################################################################
 // Queue Section
 //
@@ -652,6 +657,9 @@ static inline size_t TF##_size(TS* pList) {\
 }\
 static inline void TF##_to_array(TS* pList, T* pMemoryOut) {\
     list_to_array(&pList->list, pMemoryOut);\
+}\
+static inline T* TF##_to_memory(TS* pList) {\
+    return list_to_memory(&pList->list);\
 }\
 
 #define LIST_GENERIC_EX(T, TS, TF) CONTAINERS_LIST_GENERIC_PASTE(T, TS, TF)

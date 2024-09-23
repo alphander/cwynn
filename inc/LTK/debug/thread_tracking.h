@@ -1,10 +1,10 @@
 #ifndef THREAD_TRACKER_H
 #define THREAD_TRACKER_H
 
-#include "LTK\platform_defines.h"
+#include "platform_defines.h"
 
 #ifndef NDEBUG
-#include "LTK\threading.h"
+#include "threading.h"
 
 // By including this header, you override thread_start and thread_wait
 // a tracker function that serves the same purpose but also log debug information

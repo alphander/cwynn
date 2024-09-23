@@ -1,6 +1,6 @@
-#include "LTK\containers.h"
-#include "LTK\error_handling.h"
-#include "LTK\tests\test.h"
+#include "containers.h"
+#include "error_handling.h"
+#include "test.h"
 
 typedef struct
 {
